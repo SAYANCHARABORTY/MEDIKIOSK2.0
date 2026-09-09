@@ -6,12 +6,12 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "build": "npm run build --prefix client",
-    "build:server": "npm run build --prefix server",
-    "dev": "npm run dev --prefix client",
-    "dev:server": "npm run dev --prefix server",
-    "dev:client": "npm run dev --prefix client",
-    "start:server": "npm run start --prefix server"
+    "build": "cd client && npm install && npm run build",
+    "build:server": "cd server && npm install && npm run build",
+    "dev": "cd client && npm run dev",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "start:server": "cd server && npm start"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -29,7 +29,6 @@
     "@types/jsonwebtoken": "^9.0.8",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.13.4",
-    "@vercel/node": "^3.2.33",
     "typescript": "^5.7.3"
   }
 }
