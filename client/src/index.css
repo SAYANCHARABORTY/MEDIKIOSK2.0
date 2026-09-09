@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 10%;
+  --foreground: 0 0% 96%;
+
+  --primary: 119 99% 46%;
+  --primary-foreground: 0 0% 4%;
+
+  --secondary: 0 0% 18%;
+  --secondary-foreground: 0 0% 96%;
+
+  --muted: 0 0% 16%;
+  --muted-foreground: 0 0% 60%;
+
+  --accent: 119 99% 46%;
+  --accent-foreground: 0 0% 4%;
+
+  --destructive: 0 84% 60%;
+
+  --border: 0 0% 20%;
+  --input: 0 0% 20%;
+
+  --ring: 119 99% 46%;
+
+  --radius: 0.5rem;
+
+  --nav-button: 0 0% 18%;
+
+  --hero-bg: 0 0% 8%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Sora', sans-serif;
+  background-color: hsl(var(--hero-bg));
+  color: hsl(var(--foreground));
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Reduced motion support (Spec 8, 34) */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Dark Glassmorphism & Minimal Surface Primitives (Spec 22, 38) */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-subtle {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-glow-green {
+  box-shadow: 0 0 30px -5px hsla(119, 99%, 46%, 0.25);
+}
+
+.glass-glow-red {
+  box-shadow: 0 0 30px -5px hsla(0, 84%, 60%, 0.3);
+}
+
+/* Subtle medical '+' particles for dark internal pages (Spec 37, 45) */
+.medical-cross-particle {
+  position: absolute;
+  pointer-events: auto;
+  user-select: none;
+  color: hsla(119, 99%, 46%, 0.15);
+  font-family: 'Sora', monospace;
+  font-size: 14px;
+  font-weight: 400;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s ease;
+}
+
+.medical-cross-particle:hover {
+  color: hsla(119, 99%, 46%, 0.7);
+  transform: scale(1.4) rotate(45deg);
+}
+
+/* Custom sleek scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--hero-bg));
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsla(119, 99%, 46%, 0.5);
+}
