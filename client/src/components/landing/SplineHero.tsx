@@ -15,23 +15,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 
-// Lazy-load Spline for maximum initial performance (Spec 9, 10)
-const Spline = React.lazy(() => import('@splinetool/react-spline'));
 
-// Spline Canvas Component wrapped in React.memo to prevent unnecessary re-renders
-const SplineBackground = memo(() => {
-  return (
-    <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-auto">
-      <Suspense fallback={<div className="absolute inset-0 bg-hero-bg transition-opacity duration-500" />}>
-        <Spline
-          scene="https://prod.spline.design/Slk6b8kz3LRlKiyk/scene.splinecode"
-          className="w-full h-full"
-        />
-      </Suspense>
-    </div>
-  );
-});
-SplineBackground.displayName = 'SplineBackground';
 
 import { User, LogOut } from 'lucide-react';
 import { SupportedLanguage } from '@medikiosk/shared';

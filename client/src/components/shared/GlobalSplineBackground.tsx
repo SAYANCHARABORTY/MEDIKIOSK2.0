@@ -1,26 +1,91 @@
-import React, { Suspense, memo } from 'react';
+import React, { Suspense, memo, useState, useEffect } from 'react';
 
-// Lazy-load Spline for optimal performance across all pages
+// Lazy-load Spline for optimal performance across all pages on desktop
 const Spline = React.lazy(() => import('@splinetool/react-spline'));
 
 export const GlobalSplineBackground: React.FC = memo(() => {
+  // Mobile detection: screen width < 768px or mobile device user agent
+  const [isMobile, setIsMobile] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    const isSmallScreen = window.innerWidth < 768;
+    const isMobileUA = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    return isSmallScreen || (isMobileUA && window.innerWidth < 1024);
+  });
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const isSmallScreen = window.innerWidth < 768;
+      const isMobileUA = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobile(isSmallScreen || (isMobileUA && window.innerWidth < 1024));
+    };
+
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    const handler = (e: MediaQueryListEvent) => {
+      const isMobileUA = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobile(e.matches || (isMobileUA && window.innerWidth < 1024));
+    };
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handler);
+    } else {
+      window.addEventListener('resize', checkMobile);
+    }
+
+    return () => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener('change', handler);
+      } else {
+        window.removeEventListener('resize', checkMobile);
+      }
+    };
+  }, []);
+
   return (
     <div
       className="fixed inset-0 w-full h-full pointer-events-none z-0 overflow-hidden select-none"
+      style={{
+        contain: 'strict',
+        transform: 'translateZ(0)',
+        WebkitTransform: 'translateZ(0)',
+      }}
       aria-hidden="true"
     >
-      {/* 1. Underlying 3D Spline Canvas Layer (Full Viewport, 100% Opacity) */}
-      <div className="absolute inset-0 w-full h-full opacity-100 pointer-events-none">
-        <Suspense fallback={<div className="absolute inset-0 bg-hero-bg transition-opacity duration-500" />}>
-          <Spline
-            scene="https://prod.spline.design/Slk6b8kz3LRlKiyk/scene.splinecode"
-            className="w-full h-full object-cover"
+      {/* 1. Underlying 3D Spline Canvas Layer for Desktop ONLY */}
+      {!isMobile ? (
+        <div className="absolute inset-0 w-full h-full opacity-100 pointer-events-none">
+          <Suspense fallback={<div className="absolute inset-0 bg-hero-bg transition-opacity duration-500" />}>
+            <Spline
+              scene="https://prod.spline.design/Slk6b8kz3LRlKiyk/scene.splinecode"
+              className="w-full h-full object-cover"
+            />
+          </Suspense>
+        </div>
+      ) : (
+        /* Mobile High-Performance Background: Zero WebGL/WASM overhead, 60fps native speed */
+        <div className="absolute inset-0 w-full h-full bg-[#0d1210] pointer-events-none overflow-hidden">
+          <div
+            className="absolute -top-12 left-1/2 -translate-x-1/2 w-[340px] h-[340px] rounded-full pointer-events-none"
+            style={{
+              background: 'radial-gradient(circle, rgba(16, 185, 129, 0.22) 0%, rgba(6, 182, 212, 0.08) 45%, transparent 70%)',
+            }}
           />
-        </Suspense>
-      </div>
+          <div
+            className="absolute top-[38%] -right-20 w-[300px] h-[300px] rounded-full pointer-events-none"
+            style={{
+              background: 'radial-gradient(circle, rgba(6, 182, 212, 0.16) 0%, transparent 70%)',
+            }}
+          />
+          <div
+            className="absolute -bottom-24 left-0 w-[320px] h-[320px] rounded-full pointer-events-none"
+            style={{
+              background: 'radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, transparent 70%)',
+            }}
+          />
+        </div>
+      )}
 
-      {/* 2. Layered Translucent Atmospheric Overlays (Subtle, never hides Spline) */}
-      {/* Light Cinematic Vignette to frame content while leaving center bright */}
+      {/* 2. Layered Translucent Atmospheric Overlays */}
+      {/* Light Cinematic Vignette */}
       <div
         className="absolute inset-0"
         style={{
@@ -28,17 +93,17 @@ export const GlobalSplineBackground: React.FC = memo(() => {
         }}
       />
 
-      {/* Soft Atmospheric Green Ambient Glow Orbs */}
+      {/* Soft Atmospheric Green Ambient Glow Orbs (Desktop Only to prevent mobile GPU blur rasterization lag) */}
       <div
-        className="absolute -top-32 left-[15%] w-[600px] h-[600px] rounded-full blur-[140px] pointer-events-none"
+        className="hidden md:block absolute -top-32 left-[15%] w-[600px] h-[600px] rounded-full blur-[140px] pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(16, 185, 129, 0.18) 0%, transparent 70%)' }}
       />
       <div
-        className="absolute top-[35%] -right-28 w-[540px] h-[540px] rounded-full blur-[150px] pointer-events-none"
+        className="hidden md:block absolute top-[35%] -right-28 w-[540px] h-[540px] rounded-full blur-[150px] pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(6, 182, 212, 0.14) 0%, transparent 70%)' }}
       />
       <div
-        className="absolute -bottom-40 left-[30%] w-[660px] h-[660px] rounded-full blur-[160px] pointer-events-none"
+        className="hidden md:block absolute -bottom-40 left-[30%] w-[660px] h-[660px] rounded-full blur-[160px] pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 70%)' }}
       />
 
